@@ -1,0 +1,29 @@
+<configuration>
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>logs/application.log</file>
+        <append>true</append>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="SMTP" class="ch.qos.logback.classic.net.SMTPAppender">
+        <smtpHost>smtp.gmail.com</smtpHost>
+        <smtpPort>587</smtpPort>
+        <username>a7654837383@gmail.com</username>
+        <password>tfancgscidbdifsa</password>
+        <to>snp113363@gmail.com</to>
+        <from>a7654837383@gmail.com</from>
+        <subject>Critical Error in Application</subject>
+        <STARTTLS>true</STARTTLS>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </layout>
+    </appender>
+
+
+    <root level="info">
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="SMTP"/>
+    </root>
+</configuration>

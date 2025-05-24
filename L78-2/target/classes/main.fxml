@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600.0" minWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="taxiPark.application.MainController">
+    <top>
+        <VBox BorderPane.alignment="CENTER">
+            <children>
+                <MenuBar>
+                    <menus>
+                        <Menu mnemonicParsing="false" text="Файл">
+                            <items>
+                                <MenuItem mnemonicParsing="false" onAction="#handleCreateTaxiPark" text="Створити таксопарк" />
+                                <MenuItem mnemonicParsing="false" onAction="#handleChooseTaxiPark" text="Обрати таксопарк" />
+                                <SeparatorMenuItem mnemonicParsing="false" />
+                                <MenuItem mnemonicParsing="false" text="Закрити" />
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Редагування">
+                            <items>
+                                <MenuItem mnemonicParsing="false" onAction="#handleAddCar" text="Додати автомобіль" />
+                                <MenuItem mnemonicParsing="false" onAction="#handleRemoveCar" text="Видалити автомобіль" />
+                                <MenuItem mnemonicParsing="false" onAction="#handleUpdateCar" text="Оновити інформацію" />
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Аналіз">
+                            <items>
+                                <MenuItem mnemonicParsing="false" onAction="#handleSortByFuel" text="Сортувати за витратою пального" />
+                                <MenuItem mnemonicParsing="false" onAction="#handleFindBySpeed" text="Знайти за швидкістю" />
+                                <MenuItem mnemonicParsing="false" onAction="#handleCalculateValue" text="Розрахувати загальну вартість" />
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Допомога">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="Про програму" />
+                            </items>
+                        </Menu>
+                    </menus>
+                </MenuBar>
+                <HBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-background-color: #f0f0f0;">
+                    <children>
+                        <Label fx:id="currentTaxiParkLabel" text="Поточний таксопарк: не обрано">
+                            <font>
+                                <Font name="System Bold" size="14.0" />
+                            </font>
+                        </Label>
+                    </children>
+                    <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                    </padding>
+                </HBox>
+            </children>
+        </VBox>
+    </top>
+    <center>
+        <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <top>
+                <Label text="Автомобілі в таксопарку" BorderPane.alignment="CENTER">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                    <BorderPane.margin>
+                        <Insets bottom="5.0" top="10.0" />
+                    </BorderPane.margin>
+                </Label>
+            </top>
+            <center>
+                <ListView fx:id="carListView" BorderPane.alignment="CENTER">
+                    <BorderPane.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="5.0" />
+                    </BorderPane.margin>
+                </ListView>
+            </center>
+        </BorderPane>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
+            <children>
+                <Button fx:id="addCarButton" mnemonicParsing="false" onAction="#handleAddCar" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Додати автомобіль" />
+                <Button fx:id="removeCarButton" mnemonicParsing="false" onAction="#handleRemoveCar" style="-fx-background-color: #F44336; -fx-text-fill: white;" text="Видалити автомобіль" />
+                <Button fx:id="updateCarButton" mnemonicParsing="false" onAction="#handleUpdateCar" style="-fx-background-color: #2196F3; -fx-text-fill: white;" text="Оновити інформацію" />
+                <Button fx:id="sortByFuelButton" mnemonicParsing="false" onAction="#handleSortByFuel" text="Сортувати за витратою пального" />
+                <Button fx:id="findBySpeedButton" mnemonicParsing="false" onAction="#handleFindBySpeed" text="Знайти за швидкістю" />
+                <Button fx:id="calculateValueButton" mnemonicParsing="false" onAction="#handleCalculateValue" text="Розрахувати вартість" />
+            </children>
+            <BorderPane.margin>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </BorderPane.margin>
+        </HBox>
+    </bottom>
+</BorderPane>
