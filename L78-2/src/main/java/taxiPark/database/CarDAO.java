@@ -20,7 +20,6 @@ public class CarDAO {
         this.connectionManager = connectionManager;
     }
 
-    // Додавання нового автомобіля
     public int createCar(Car car, int taxiParkId, Connection existingConnection) throws SQLException {
         String sql = "INSERT INTO cars (model, price, fuel_consumption, max_speed, type, taxi_park_id) VALUES (?, ?, ?, ?, ?, ?)";
         int generatedId = -1;
@@ -71,7 +70,6 @@ public class CarDAO {
         }
     }
 
-    // Отримання всіх автомобілів для певного таксопарку
     public List<Car> getCarsByTaxiParkId(int taxiParkId) {
         List<Car> cars = new ArrayList<>();
         String sql = "SELECT id, model, price, fuel_consumption, max_speed, type FROM cars WHERE taxi_park_id = ?";
@@ -104,7 +102,6 @@ public class CarDAO {
         return cars;
     }
 
-    // Отримання автомобіля за ID
     public Car getCarById(int id) {
         String sql = "SELECT model, price, fuel_consumption, max_speed, type FROM cars WHERE id = ?";
 
@@ -135,7 +132,6 @@ public class CarDAO {
         return null;
     }
 
-    // Оновлення автомобіля
     public boolean updateCar(Car car) {
         String sql = "UPDATE cars SET model = ?, price = ?, fuel_consumption = ?, max_speed = ?, type = ? WHERE id = ?";
 
@@ -162,7 +158,6 @@ public class CarDAO {
         return false;
     }
 
-    // Видалення автомобіля
     public boolean deleteCar(int id) {
         String sql = "DELETE FROM cars WHERE id = ?";
 
@@ -184,7 +179,6 @@ public class CarDAO {
         return false;
     }
 
-    // Отримання автомобілів за діапазоном швидкості
     public List<Car> getCarsBySpeedRange(int minSpeed, int maxSpeed, int taxiParkId) {
         List<Car> cars = new ArrayList<>();
         String sql = "SELECT id, model, price, fuel_consumption, max_speed, type FROM cars " +
@@ -221,7 +215,6 @@ public class CarDAO {
         return cars;
     }
 
-    // Отримання автомобілів відсортованих за витратою пального
     public List<Car> getCarsSortedByFuelConsumption(int taxiParkId) {
         List<Car> cars = new ArrayList<>();
         String sql = "SELECT id, model, price, fuel_consumption, max_speed, type FROM cars " +
@@ -255,7 +248,6 @@ public class CarDAO {
         return cars;
     }
 
-    // Отримання загальної вартості автомобілів таксопарку
     public double getTotalCarValueByTaxiParkId(int taxiParkId) {
         String sql = "SELECT SUM(price) as total_value FROM cars WHERE taxi_park_id = ?";
         double totalValue = 0.0;

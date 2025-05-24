@@ -43,7 +43,6 @@ public class AddCarController {
 
     @FXML
     public void initialize() {
-        // Ініціалізація контролера при завантаженні FXML
         this.carDAO = new CarDAO();
     }
 
@@ -71,7 +70,6 @@ public class AddCarController {
 
                 Car newCar = new Car(model, price, fuelConsumption, maxSpeed, type);
 
-                // Додаємо автомобіль до бази даних
                 int carId = carDAO.createCar(newCar, taxiPark.getId());
 
                 if (carId > 0) {

@@ -24,16 +24,13 @@ class TaxiParkDAOTest {
 
     @BeforeAll
     static void setUpBeforeAll() {
-        // Змінюємо назву бази даних для тестів
         DatabaseConnectionManager.setDatabaseNameForTest(TEST_DB_NAME);
 
-        // Створюємо тестову базу даних
         testConnectionManager = DatabaseConnectionManager.getInstance();
     }
 
     @AfterAll
     static void tearDownAfterAll() {
-        // Очищаємо тестову базу даних після всіх тестів
         try (Connection connection = testConnectionManager.getConnection();
              Statement statement = connection.createStatement()) {
             statement.executeUpdate("DROP TABLE IF EXISTS cars");
@@ -46,11 +43,9 @@ class TaxiParkDAOTest {
 
     @BeforeEach
     void setUp() {
-        // Ініціалізуємо DAO для кожного тесту
         taxiParkDAO = new TaxiParkDAO(testConnectionManager);
         carDAO = new CarDAO(testConnectionManager);
 
-        // Очищаємо таблиці перед кожним тестом
         try (Connection connection = testConnectionManager.getConnection();
              Statement statement = connection.createStatement()) {
             statement.executeUpdate("DELETE FROM cars");
@@ -62,30 +57,27 @@ class TaxiParkDAOTest {
 
     @Test
     void createTaxiPark_shouldCreateNewTaxiPark() {
-        // Arrange
         TaxiPark taxiPark = new TaxiPark("Test Park", new ArrayList<>());
 
-        // Act
         int createdId = taxiParkDAO.createTaxiPark(taxiPark);
 
-        // Assert
         assertTrue(createdId > 0);
         assertEquals(createdId, taxiPark.getId());
     }
 
     @Test
     void createTaxiPark_withCars_shouldCreateParkWithCars() {
-        // Arrange
+
         List<Car> cars = new ArrayList<>();
         cars.add(new Car("Model1", 10000, 8.5, 180, "Sedan"));
         cars.add(new Car("Model2", 15000, 10.2, 200, "SUV"));
 
         TaxiPark taxiPark = new TaxiPark("Park with Cars", cars);
 
-        // Act
+
         int createdId = taxiParkDAO.createTaxiPark(taxiPark);
 
-        // Assert
+
         assertTrue(createdId > 0);
 
         TaxiPark retrievedPark = taxiParkDAO.getTaxiParkById(createdId);
@@ -95,27 +87,23 @@ class TaxiParkDAOTest {
 
     @Test
     void getAllTaxiParks_shouldReturnAllParks() {
-        // Arrange
+
         taxiParkDAO.createTaxiPark(new TaxiPark("Park 1", new ArrayList<>()));
         taxiParkDAO.createTaxiPark(new TaxiPark("Park 2", new ArrayList<>()));
 
-        // Act
         List<TaxiPark> parks = taxiParkDAO.getAllTaxiParks();
 
-        // Assert
         assertEquals(2, parks.size());
     }
 
     @Test
     void getTaxiParkById_shouldReturnCorrectPark() {
-        // Arrange
         TaxiPark expectedPark = new TaxiPark("Test Park", new ArrayList<>());
         int id = taxiParkDAO.createTaxiPark(expectedPark);
 
-        // Act
+
         TaxiPark actualPark = taxiParkDAO.getTaxiParkById(id);
 
-        // Assert
         assertNotNull(actualPark);
         assertEquals(expectedPark.getName(), actualPark.getName());
         assertEquals(id, actualPark.getId());
@@ -123,43 +111,40 @@ class TaxiParkDAOTest {
 
     @Test
     void getTaxiParkById_withInvalidId_shouldReturnNull() {
-        // Act
+
         TaxiPark park = taxiParkDAO.getTaxiParkById(-1);
 
-        // Assert
         assertNull(park);
     }
 
     @Test
     void updateTaxiPark_shouldUpdateParkName() {
-        // Arrange
+
         TaxiPark park = new TaxiPark("Old Name", new ArrayList<>());
         int id = taxiParkDAO.createTaxiPark(park);
 
-        // Act
         park.setName("New Name");
         boolean result = taxiParkDAO.updateTaxiPark(park);
 
-        // Assert
+
         assertTrue(result);
     }
 
     @Test
     void deleteTaxiPark_shouldRemoveParkFromDatabase() {
-        // Arrange
+
         TaxiPark park = new TaxiPark("To Delete", new ArrayList<>());
         int id = taxiParkDAO.createTaxiPark(park);
 
-        // Act
+
         boolean result = taxiParkDAO.deleteTaxiPark(id);
 
-        // Assert
         assertTrue(result);
     }
 
     @Test
     void deleteTaxiPark_shouldAlsoDeleteAssociatedCars() {
-        // Arrange
+
         List<Car> cars = new ArrayList<>();
         cars.add(new Car("Model1", 10000, 8.5, 180, "Sedan"));
 
@@ -171,7 +156,7 @@ class TaxiParkDAOTest {
 
     @Test
     void getAllTaxiParks_whenDatabaseError_shouldReturnEmptyList() throws SQLException {
-        // Arrange
+
         Connection mockConnection = mock(Connection.class);
         Statement mockStatement = mock(Statement.class);
         when(mockConnection.createStatement()).thenReturn(mockStatement);
@@ -184,17 +169,17 @@ class TaxiParkDAOTest {
             }
         });
 
-        // Act
+
         List<TaxiPark> result = daoWithMock.getAllTaxiParks();
 
-        // Assert
+
         assertNotNull(result);
         assertTrue(result.isEmpty());
     }
 
     @Test
     void getTaxiParkById_whenDatabaseError_shouldReturnNull() throws SQLException {
-        // Arrange
+
         Connection mockConnection = mock(Connection.class);
         PreparedStatement mockStatement = mock(PreparedStatement.class);
         when(mockConnection.prepareStatement(anyString())).thenReturn(mockStatement);
@@ -207,16 +192,15 @@ class TaxiParkDAOTest {
             }
         });
 
-        // Act
         TaxiPark result = daoWithMock.getTaxiParkById(1);
 
-        // Assert
+
         assertNull(result);
     }
 
     @Test
     void updateTaxiPark_whenDatabaseError_shouldReturnFalse() throws SQLException {
-        // Arrange
+
         TaxiPark park = new TaxiPark("Test Park", new ArrayList<>());
         int id = taxiParkDAO.createTaxiPark(park);
         park.setId(id);
@@ -233,16 +217,16 @@ class TaxiParkDAOTest {
             }
         });
 
-        // Act
+
         boolean result = daoWithMock.updateTaxiPark(park);
 
-        // Assert
+
         assertFalse(result);
     }
 
     @Test
     void deleteTaxiPark_whenDatabaseError_shouldReturnFalse() throws SQLException {
-        // Arrange
+
         TaxiPark park = new TaxiPark("Test Park", new ArrayList<>());
         int id = taxiParkDAO.createTaxiPark(park);
 
@@ -258,16 +242,16 @@ class TaxiParkDAOTest {
             }
         });
 
-        // Act
+
         boolean result = daoWithMock.deleteTaxiPark(id);
 
-        // Assert
+
         assertFalse(result);
     }
 
     @Test
     void createTaxiPark_whenTransactionFails_shouldRollback() throws SQLException {
-        // Arrange
+
         List<Car> cars = new ArrayList<>();
         cars.add(new Car("Model1", 10000, 8.5, 180, "Sedan"));
         cars.add(new Car("Model2", 15000, 10.2, 200, "SUV"));
@@ -285,10 +269,9 @@ class TaxiParkDAOTest {
             }
         });
 
-        // Act
+
         int result = daoWithMock.createTaxiPark(taxiPark);
 
-        // Assert
         assertEquals(-1, result);
         verify(mockConnection, times(1)).rollback();
     }

@@ -21,7 +21,6 @@ public class TaxiParkDAO {
         this.connectionManager = connectionManager;
     }
 
-    // Додавання нового таксопарку
     public int createTaxiPark(TaxiPark taxiPark) {
         String sql = "INSERT INTO taxi_parks (name) VALUES (?)";
         int generatedId = -1;
@@ -30,10 +29,6 @@ public class TaxiParkDAO {
         try {
             // Отримуємо з'єднання
             connection = connectionManager.getConnection();
-
-            // Зберігаємо поточний стан автокоміту
-           // boolean autoCommit = connection.getAutoCommit();
-            //connection.setAutoCommit(false);
 
             try {
                 logger.info("Спроба створити таксопарк з назвою: {}", taxiPark.getName());
@@ -46,7 +41,7 @@ public class TaxiParkDAO {
                         try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
                             if (generatedKeys.next()) {
                                 generatedId = generatedKeys.getInt(1);
-                                // Встановлюємо ID для об'єкта таксопарку
+                                // ID для об'єкта таксопарку
                                 taxiPark.setId(generatedId);
                                 logger.info("Створено новий таксопарк з id={}: {}", generatedId, taxiPark.getName());
 
@@ -54,7 +49,7 @@ public class TaxiParkDAO {
                                 if (taxiPark.getCars() != null && !taxiPark.getCars().isEmpty()) {
                                     CarDAO carDAO = new CarDAO();
                                     for (Car car : taxiPark.getCars()) {
-                                        // Важливо: передаємо connection для використання тієї ж транзакції
+                                        // передаємо connection для використання тієї ж транзакції
                                         int carId = carDAO.createCar(car, generatedId, connection);
                                         if (carId <= 0) {
                                             throw new SQLException("Не вдалося додати автомобіль до таксопарку");
@@ -66,7 +61,6 @@ public class TaxiParkDAO {
                     }
                 }
 
-                // Підтверджуємо транзакцію, якщо все пройшло успішно
                 connection.commit();
                 logger.info("Транзакцію створення таксопарку успішно підтверджено");
 
@@ -92,7 +86,6 @@ public class TaxiParkDAO {
         return generatedId;
     }
 
-    // Отримання всіх таксопарків - виправлений метод з try-with-resources
     public List<TaxiPark> getAllTaxiParks() {
         List<TaxiPark> taxiParks = new ArrayList<>();
         String sql = "SELECT id, name FROM taxi_parks";
@@ -101,7 +94,6 @@ public class TaxiParkDAO {
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
 
-            // Створюємо тимчасовий список об'єктів з id та name
             List<Integer> ids = new ArrayList<>();
             List<String> names = new ArrayList<>();
 
@@ -110,7 +102,6 @@ public class TaxiParkDAO {
                 names.add(resultSet.getString("name"));
             }
 
-            // Виходимо з ResultSet — тепер можна викликати інші DAO
             CarDAO carDAO = new CarDAO();
 
             for (int i = 0; i < ids.size(); i++) {
@@ -129,12 +120,9 @@ public class TaxiParkDAO {
             logger.error("Помилка при отриманні списку таксопарків: {} (SQL State: {}, Error Code: {})",
                     e.getMessage(), e.getSQLState(), e.getErrorCode(), e);
         }
-
-
         return taxiParks;
     }
 
-    // Отримання таксопарку за ID - виправлений метод з try-with-resources
     public TaxiPark getTaxiParkById(int id) {
         String sql = "SELECT name FROM taxi_parks WHERE id = ?";
 
@@ -147,11 +135,9 @@ public class TaxiParkDAO {
                 if (resultSet.next()) {
                     String name = resultSet.getString("name");
 
-                    // Отримуємо автомобілі для таксопарку
                     CarDAO carDAO = new CarDAO();
                     List<Car> cars = carDAO.getCarsByTaxiParkId(id);
 
-                    // Створюємо таксопарк
                     TaxiPark taxiPark = new TaxiPark(name, cars);
                     taxiPark.setId(id);
 
@@ -167,7 +153,6 @@ public class TaxiParkDAO {
         return null;
     }
 
-    // Оновлення таксопарку - виправлений метод з try-with-resources
     public boolean updateTaxiPark(TaxiPark taxiPark) {
         String sql = "UPDATE taxi_parks SET name = ? WHERE id = ?";
 
@@ -191,7 +176,6 @@ public class TaxiParkDAO {
         return false;
     }
 
-    // Видалення таксопарку - виправлений метод з try-with-resources
     public boolean deleteTaxiPark(int id) {
         String sql = "DELETE FROM taxi_parks WHERE id = ?";
 

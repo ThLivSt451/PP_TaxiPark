@@ -42,7 +42,6 @@ public class UpdateCarController {
 
     @FXML
     public void initialize() {
-        // Ініціалізація контролера при завантаженні FXML
         this.carDAO = new CarDAO();
     }
 

@@ -15,14 +15,11 @@ public class TaxiParkApplication extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            // Ініціалізуємо підключення до бази даних
             DatabaseConnectionManager.getInstance();
 
-            // Завантажуємо FXML
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/main.fxml"));
             Parent root = loader.load();
 
-            // Налаштовуємо основну сцену
             Scene scene = new Scene(root);
             primaryStage.setTitle("Taxi Park Manager");
             primaryStage.setScene(scene);
@@ -32,7 +29,6 @@ public class TaxiParkApplication extends Application {
 
             logger.info("JavaFX GUI додаток запущено");
 
-            // Закриваємо з'єднання при виході
             primaryStage.setOnCloseRequest(event -> {
                 logger.info("Закриття додатку");
                 DatabaseConnectionManager.getInstance().closeConnection();

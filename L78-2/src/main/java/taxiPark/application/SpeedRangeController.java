@@ -46,7 +46,6 @@ public class SpeedRangeController {
 
     @FXML
     public void initialize() {
-        // Ініціалізація контролера при завантаженні FXML
         this.carDAO = new CarDAO();
     }
 
@@ -75,7 +74,6 @@ public class SpeedRangeController {
 
                 List<Car> foundCars = carDAO.getCarsBySpeedRange(minSpeed, maxSpeed, taxiPark.getId());
 
-                // Очищаємо і заповнюємо список результатів
                 resultsListView.getItems().clear();
                 resultsListView.getItems().addAll(foundCars);
 
@@ -126,7 +124,6 @@ public class SpeedRangeController {
             }
         }
 
-        // Перевірка логіки: мінімальна швидкість має бути менша за максимальну
         if (errorMessage.isEmpty()) {
             int minSpeed = Integer.parseInt(minSpeedField.getText());
             int maxSpeed = Integer.parseInt(maxSpeedField.getText());

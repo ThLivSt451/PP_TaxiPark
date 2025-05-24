@@ -39,7 +39,6 @@ public class MainController {
         taxiParkDAO = new TaxiParkDAO();
         disableTaxiParkFeatures();
 
-        // Налаштовуємо відображення автомобілів
         carListView.setCellFactory(param -> new ListCell<Car>() {
             @Override
             protected void updateItem(Car car, boolean empty) {
@@ -69,7 +68,6 @@ public class MainController {
 
             int taxiParkId = taxiParkDAO.createTaxiPark(newTaxiPark);
             if (taxiParkId > 0) {
-                // Отримуємо оновлений таксопарк з бази даних для коректних даних
                 TaxiPark createdTaxiPark = taxiParkDAO.getTaxiParkById(taxiParkId);
                 if (createdTaxiPark != null) {
                     setCurrentTaxiPark(createdTaxiPark);
@@ -93,7 +91,6 @@ public class MainController {
 
     @FXML
     public void handleChooseTaxiPark(ActionEvent event) {
-        // Отримуємо свіжий список таксопарків з бази даних
         List<TaxiPark> taxiParks = taxiParkDAO.getAllTaxiParks();
 
         if (taxiParks.isEmpty()) {
@@ -101,20 +98,16 @@ public class MainController {
             return;
         }
 
-        // Створюємо кастомізований діалог вибору
         Dialog<TaxiPark> dialog = new Dialog<>();
         dialog.setTitle("Вибір таксопарку");
         dialog.setHeaderText("Оберіть таксопарк зі списку");
 
-        // Додаємо кнопки OK та Cancel
         ButtonType confirmButtonType = new ButtonType("Обрати", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(confirmButtonType, ButtonType.CANCEL);
 
-        // Створюємо ListView для таксопарків
         ListView<TaxiPark> taxiParkListView = new ListView<>();
         taxiParkListView.getItems().addAll(taxiParks);
 
-        // Встановлюємо власний спосіб відображення елементів
         taxiParkListView.setCellFactory(lv -> new ListCell<TaxiPark>() {
             @Override
             protected void updateItem(TaxiPark taxiPark, boolean empty) {
@@ -128,10 +121,8 @@ public class MainController {
             }
         });
 
-        // Додаємо ListView до діалогу
         dialog.getDialogPane().setContent(taxiParkListView);
 
-        // Отримуємо обраний таксопарк після натискання кнопки OK
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == confirmButtonType) {
                 return taxiParkListView.getSelectionModel().getSelectedItem();
@@ -139,11 +130,9 @@ public class MainController {
             return null;
         });
 
-        // Показуємо діалог та обробляємо результат
         Optional<TaxiPark> result = dialog.showAndWait();
 
         result.ifPresent(selectedTaxiPark -> {
-            // Отримуємо свіжі дані таксопарку з бази даних
             TaxiPark refreshedTaxiPark = taxiParkDAO.getTaxiParkById(selectedTaxiPark.getId());
             if (refreshedTaxiPark != null) {
                 setCurrentTaxiPark(refreshedTaxiPark);
@@ -166,11 +155,9 @@ public class MainController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/addCar.fxml"));
             Parent root = loader.load();
 
-            // Передаємо поточний таксопарк контролеру форми
             AddCarController controller = loader.getController();
             controller.setTaxiPark(currentTaxiPark);
 
-            // Важливо: встановлюємо діалогову сцену для контролера
             Stage stage = new Stage();
             controller.setDialogStage(stage);
 
@@ -178,8 +165,6 @@ public class MainController {
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
-
-            // Оновлюємо список автомобілів після закриття вікна
             refreshCarList();
 
         } catch (IOException e) {
@@ -209,19 +194,15 @@ public class MainController {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            // Видаляємо автомобіль з бази даних через DAO
             boolean isDeleted = new CarDAO().deleteCar(selectedCar.getId());
 
             if (isDeleted) {
                 logger.info("Автомобіль видалено: {}", selectedCar.getModel());
                 showInfoAlert("Автомобіль видалено.");
-
-                // Оновлюємо поточний таксопарк з бази даних
                 TaxiPark refreshedTaxiPark = taxiParkDAO.getTaxiParkById(currentTaxiPark.getId());
                 if (refreshedTaxiPark != null) {
                     setCurrentTaxiPark(refreshedTaxiPark);
                 } else {
-                    // Якщо не вдалося отримати оновлені дані, просто оновлюємо список
                     refreshCarList();
                 }
             } else {
@@ -248,11 +229,9 @@ public class MainController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/updateCar.fxml"));
             Parent root = loader.load();
 
-            // Передаємо вибраний автомобіль контролеру форми
             UpdateCarController controller = loader.getController();
             controller.setCar(selectedCar);
 
-            // Важливо: встановлюємо діалогову сцену для контролера
             Stage stage = new Stage();
             controller.setDialogStage(stage);
 
@@ -261,7 +240,6 @@ public class MainController {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
 
-            // Оновлюємо список автомобілів після закриття вікна
             refreshCarList();
 
         } catch (IOException e) {
@@ -330,7 +308,6 @@ public class MainController {
         alert.showAndWait();
     }
 
-    // Метод для оновлення списку автомобілів
     public void refreshCarList() {
         if (currentTaxiPark != null) {
             int taxiParkId = currentTaxiPark.getId();
@@ -344,7 +321,6 @@ public class MainController {
         }
     }
 
-    // Встановлення поточного таксопарку
     private void setCurrentTaxiPark(TaxiPark taxiPark) {
         this.currentTaxiPark = taxiPark;
         currentTaxiParkLabel.setText("Поточний таксопарк: " + taxiPark.getName());
@@ -353,7 +329,6 @@ public class MainController {
         logger.info("Обрано таксопарк: {} (ID: {})", taxiPark.getName(), taxiPark.getId());
     }
 
-    // Увімкнення функцій роботи з таксопарком
     private void enableTaxiParkFeatures() {
         addCarButton.setDisable(false);
         removeCarButton.setDisable(false);
@@ -363,7 +338,6 @@ public class MainController {
         calculateValueButton.setDisable(false);
     }
 
-    // Вимкнення функцій роботи з таксопарком
     private void disableTaxiParkFeatures() {
         addCarButton.setDisable(true);
         removeCarButton.setDisable(true);
@@ -373,7 +347,6 @@ public class MainController {
         calculateValueButton.setDisable(true);
     }
 
-    // Utilities for showing alerts
     private void showErrorAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Помилка");
