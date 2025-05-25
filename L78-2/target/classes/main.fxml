@@ -23,6 +23,7 @@
                             <items>
                                 <MenuItem mnemonicParsing="false" onAction="#handleCreateTaxiPark" text="Створити таксопарк" />
                                 <MenuItem mnemonicParsing="false" onAction="#handleChooseTaxiPark" text="Обрати таксопарк" />
+                                <MenuItem mnemonicParsing="false" onAction="#handleDeleteTaxiPark" text="Видалити таксопарк" />
                                 <SeparatorMenuItem mnemonicParsing="false" />
                                 <MenuItem mnemonicParsing="false" text="Закрити" />
                             </items>

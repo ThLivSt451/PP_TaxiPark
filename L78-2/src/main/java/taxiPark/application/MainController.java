@@ -145,6 +145,41 @@ public class MainController {
     }
 
     @FXML
+    public void handleDeleteTaxiPark(ActionEvent event) {
+        if (currentTaxiPark == null) {
+            showInfoAlert("Спочатку оберіть таксопарк.");
+            return;
+        }
+
+        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmAlert.setTitle("Підтвердження видалення");
+        confirmAlert.setHeaderText("Видалення таксопарку");
+        confirmAlert.setContentText("Ви впевнені, що хочете видалити таксопарк '" +
+                currentTaxiPark.getName() + "'?\n\n" +
+                "УВАГА: Це також видалить всі автомобілі в цьому таксопарку!");
+
+        Optional<ButtonType> result = confirmAlert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            boolean isDeleted = taxiParkDAO.deleteTaxiPark(currentTaxiPark.getId());
+
+            if (isDeleted) {
+                logger.info("Таксопарк видалено: {} (ID: {})", currentTaxiPark.getName(), currentTaxiPark.getId());
+
+                // Скидаємо поточний таксопарк
+                currentTaxiPark = null;
+                currentTaxiParkLabel.setText("Поточний таксопарк: не обрано");
+                carListView.getItems().clear();
+                disableTaxiParkFeatures();
+
+                showInfoAlert("Таксопарк успішно видалено.");
+            } else {
+                logger.error("Помилка при видаленні таксопарку з бази даних");
+                showErrorAlert("Помилка при видаленні таксопарку з бази даних.");
+            }
+        }
+    }
+
+    @FXML
     public void handleAddCar(ActionEvent event) {
         if (currentTaxiPark == null) {
             showInfoAlert("Спочатку оберіть таксопарк.");
